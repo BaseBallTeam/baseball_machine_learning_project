@@ -4,8 +4,10 @@
 
 import re
 import pandas as pd
+import numpy as np
 from collections import defaultdict
 from google.colab import files
+
 
 # 체격 CSV 불러오기 및 전처리
 physique_df = pd.read_csv("/content/KBO_player_register_.csv")
@@ -19,6 +21,20 @@ physique_df["몸무게"] = physique_df["체격"].str.extract(r"(\d+(?:\.\d+)?)kg
 
 # 수정된 버전 - 딕셔너리 형태로 저장
 physique_map = physique_df.set_index("선수명")[["키", "몸무게"]].to_dict(orient="index")
+
+# 주력수치 데이터 추가
+spd_by_year = {}
+for year in [2023, 2024,2025]:
+    try:
+        filename = f"{year}_주력수치_processed.csv"
+        spd_df = pd.read_csv(filename)
+        spd_map = spd_df.set_index("선수명")["주력수치"].to_dict()
+
+        spd_by_year[year] = spd_map
+        print(f"{year}년 주력수치 로드 완료 (선수 {len(spd_map)}명)")
+    except Exception as e:
+        print(f"{year}년 주력수치 파일{{filename}) 불러오기 실패: {e}")
+        spd_by_year[year] = {}    # 파일 없거나 오류나면 빈 딕셔너리 처리해버리기 
 
 # 주자명 추출
 def extract_runner_name(raw):
@@ -181,6 +197,9 @@ def parse_doru_with_pitcher_timeline_and_physique(text_by_year, lineup_by_year, 
                     throw_val = {"우": 0, "좌": 1}.get(throw, "")
                     result_val = 1 if re.search(r"(도루.*진루|진루.*도루|도루로)", line) else 0 if re.search(r"(실패|아웃|도루사|태그아웃)", line) else ""
 
+                    current_year_spd = spd_by_year.get(year, {})
+                    spd_val = current_year_spd.get(runner_name, np.nan)    # 이건 선수명, 즉 주자이름이 맴에 없으면 np.nan을 반환. 결측치 반환한다고 보면 됨
+
                     all_results.append({
                         "year": year,
                         "game_id": game_id,
@@ -192,7 +211,8 @@ def parse_doru_with_pitcher_timeline_and_physique(text_by_year, lineup_by_year, 
                         "키": height,
                         "몸무게": weight,
                         "투수 손": throw_val,
-                        "도루 성공 여부": result_val
+                        "도루 성공 여부": result_val,
+                        "주력수치": spd_val
                     })
 
     return pd.DataFrame(all_results)
