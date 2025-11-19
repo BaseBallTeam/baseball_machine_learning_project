@@ -28,15 +28,12 @@ for file in file_list:
         processed_df.dropna(inplace=True)
         output_filename = f"{year}_주력수치_processed.csv"
         processed_df.to_csv(output_filename, index=False, encoding='utf-8-sig')
-        print(f"'{output_filename}' 파일 생성 완료. 다운로드를 시작합니다.")
+        print(f"'{output_filename}' 다운로드를 시작.")
         files.download(output_filename)
 
     except FileNotFoundError:
-         print(f"!!! 오류: '{file}'을(를) 찾을 수 없습니다.")
-         print("!!! 파일이 코랩 환경의 '/content/' 경로에 업로드되었는지 확인하세요.")
+         print(f"오류: '{file}'을(를) 찾을 수 없습니다.")
     except Exception as e:
-        print(f"파일 {file} 처리 중 오류 발생: {e}")
+        print(f"파일 '{file}' 처리 중 오류 발생: {e}")
 
 print("\n완료")
-
-"""/content/drive/MyDrive/기학기팀플자료/2023 주루 수치.CSV"""
