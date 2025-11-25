@@ -3,15 +3,15 @@
 
 
 # Colab에 Chrome 설치 / 주석 해제 후 실행
-# !apt-get update
-# !apt-get install -y wget unzip
-# !wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-# !dpkg -i google-chrome-stable_current_amd64.deb || apt-get -fy install
+!apt-get update
+!apt-get install -y wget unzip
+!wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+!dpkg -i google-chrome-stable_current_amd64.deb || apt-get -fy install
 
 # Selenium 및 Python 라이브러리 설치 / 주석 해제 후 실행
-# !pip install -q selenium
-# !pip install -q webdriver-manager
-# !pip install -q beautifulsoup4 pandas numpy scikit-learn matplotlib seaborn requests openpyxl tqdm
+!pip install -q selenium
+!pip install -q webdriver-manager
+!pip install -q beautifulsoup4 pandas numpy scikit-learn matplotlib seaborn requests openpyxl tqdm
 
 # Selenium 및 라이브러리 모듈
 from selenium import webdriver
